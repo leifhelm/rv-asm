@@ -59,8 +59,8 @@ pub const Assembler = struct {
         try file.seekTo(0);
         try file.writeAll(toBytes(&header));
     }
-    const textSection = Section{ .section = 2 };
-    const dataSection = Section{ .section = 3 };
+    pub const textSection = Section{ .section = 2 };
+    pub const dataSection = Section{ .section = 3 };
     fn addString(self: *Self, string: []const u8) !usize {
         return addCString(&self.string_table, string);
     }
@@ -271,13 +271,13 @@ fn defaultElfHeader() Elf32_Ehdr {
         .e_type = elf.ET_REL,
         .e_machine = elf.EM_RISCV,
         .e_version = elf.EV_CURRENT,
-        .e_entry = undefined,
-        .e_phoff = undefined,
+        .e_entry = 0,
+        .e_phoff = 0,
         .e_shoff = undefined,
         .e_flags = 0,
         .e_ehsize = @sizeOf(Elf32_Ehdr),
         .e_phentsize = @sizeOf(Elf32_Phdr),
-        .e_phnum = undefined,
+        .e_phnum = 0,
         .e_shentsize = @sizeOf(Elf32_Shdr),
         .e_shnum = undefined,
         .e_shstrndx = 1,
