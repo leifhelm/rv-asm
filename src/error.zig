@@ -2,7 +2,7 @@ const std = @import("std");
 const assert = std.debug.assert;
 const colors = @import("colors.zig");
 
-pub const IllegalArgumentError = error{ SliceNotInContext, CursorNotInSlice };
+pub const InvalidArgumentError = error{ SliceNotInContext, CursorNotInSlice };
 
 pub const Error = struct {
     message: [*:0]const u8,
@@ -73,10 +73,10 @@ fn printCursorMessage(err: ErrorContext, linenumber_print_length: usize) !void {
 fn printContext(err: ErrorContext) !void {
     var linenumber: usize = 1;
     if(err.location.len != 0 and err.cursor >= err.location.len ){
-        return IllegalArgumentError.CursorNotInSlice;
+        return InvalidArgumentError.CursorNotInSlice;
     }
     if(err.location.len == 0 and err.cursor != 0){
-        return IllegalArgumentError.CursorNotInSlice;
+        return InvalidArgumentError.CursorNotInSlice;
     }
     var line_start: [*:0]const u8 = err.input;
     {
@@ -84,7 +84,7 @@ fn printContext(err: ErrorContext) !void {
         while (@ptrToInt(err.input + i) < @ptrToInt(err.location.ptr)) : (i += 1) {
             var c: u8 = err.input[i];
             if (c == 0) {
-                return IllegalArgumentError.SliceNotInContext;
+                return InvalidArgumentError.SliceNotInContext;
             }
             if (c == '\n') {
                 linenumber += 1;
@@ -262,7 +262,7 @@ test "slice not in context" {
         },
         .message = "some error",
     };
-    try expectError(IllegalArgumentError.SliceNotInContext, printError(err));
+    try expectError(InvalidArgumentError.SliceNotInContext, printError(err));
 }
 
 test "cursor not in slice" {
@@ -277,7 +277,7 @@ test "cursor not in slice" {
         },
         .message = "some error",
     };
-    try expectError(IllegalArgumentError.CursorNotInSlice, printError(err));
+    try expectError(InvalidArgumentError.CursorNotInSlice, printError(err));
 }
 
 test "cursor not in zero sized slice" {
@@ -292,5 +292,5 @@ test "cursor not in zero sized slice" {
         },
         .message = "some error",
     };
-    try expectError(IllegalArgumentError.CursorNotInSlice, printError(err));
+    try expectError(InvalidArgumentError.CursorNotInSlice, printError(err));
 }
