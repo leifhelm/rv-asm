@@ -10,10 +10,10 @@ const ApplicationError = error{FatalError};
 const stderr = std.io.getStdErr().writer();
 
 const ExitCode = enum(u8) {
-    ok = 0,
-    cli_usage_error = 64,
-    cannot_open_input = 66,
-    leaked_memory = 199,
+    Ok = 0,
+    CliUsageError = 64,
+    CannotOpenInput = 66,
+    LeakedMemory = 199,
 };
 
 pub fn main() !void {
@@ -22,7 +22,7 @@ pub fn main() !void {
         const leaked = gpa.deinit();
         if (leaked) {
             _ = stderr.write("\nLEAKED MEMORY\n") catch {};
-            exit(.leaked_memory);
+            exit(.LeakedMemory);
         }
     }
     const allocator = gpa.allocator();
@@ -30,7 +30,7 @@ pub fn main() !void {
     defer allocator.free(args);
     if (args.len != 2) {
         stderr.writeAll("usage: rv-asm <FILE>\n") catch {};
-        exit(.cli_usage_error);
+        exit(.CliUsageError);
     }
     var file_name = args[1];
 
@@ -54,7 +54,7 @@ pub fn loadFile(allocator: Allocator, file_name: []const u8) ![]u8 {
             error.OutOfMemory => return err,
             else => {
                 stderr.print(colors.error_fmt ++ " the file " ++ colors.blue_underline ++ "{s}" ++ colors.clear ++ " could not be opened.\n", .{file_name}) catch {};
-                exit(.cannot_open_input);
+                exit(.CannotOpenInput);
             },
         }
     };
