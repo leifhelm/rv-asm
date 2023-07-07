@@ -49,33 +49,33 @@ fn lengths(err: *const ErrorContext, line_start: [*:0]const u8, line_end: [*:0]c
     const line_length: usize = @ptrToInt(line_end) - @ptrToInt(line_start);
     var l: Lengths = undefined;
     l.inbetween = err.location;
-    if(l.inbetween.len == 0){
+    if (l.inbetween.len == 0) {
         l.inbetween.len = 1;
     }
-    if(@ptrToInt(line_end) < @ptrToInt(l.inbetween.ptr + l.inbetween.len)){
+    if (@ptrToInt(line_end) < @ptrToInt(l.inbetween.ptr + l.inbetween.len)) {
         l.inbetween.len -= 1;
     }
     assert(@ptrToInt(line_end) >= @ptrToInt(l.inbetween.ptr + l.inbetween.len));
     l.before = line_start[0 .. @ptrToInt(err.location.ptr) - @ptrToInt(line_start)];
     const after_start = l.inbetween.ptr + l.inbetween.len;
-    l.after = after_start[0..@ptrToInt(line_end) - @ptrToInt(after_start)];
+    l.after = after_start[0 .. @ptrToInt(line_end) - @ptrToInt(after_start)];
     assert(line_length == l.before.len + l.inbetween.len + l.after.len);
-    l.after_cursor = if(err.location.len == 0) 0 else err.location.len - err.cursor - 1;
+    l.after_cursor = if (err.location.len == 0) 0 else err.location.len - err.cursor - 1;
     assert(err.location.len == 0 or err.cursor + l.after_cursor + 1 == err.location.len);
     return l;
 }
 fn printCursorMessage(err: ErrorContext, linenumber_print_length: usize) !void {
     _ = linenumber_print_length;
-    if(err.cursor_message) |_| {
+    if (err.cursor_message) |_| {
         unreachable;
     }
 }
 fn printContext(err: ErrorContext) !void {
     var linenumber: usize = 1;
-    if(err.location.len != 0 and err.cursor >= err.location.len ){
+    if (err.location.len != 0 and err.cursor >= err.location.len) {
         return InvalidArgumentError.CursorNotInSlice;
     }
-    if(err.location.len == 0 and err.cursor != 0){
+    if (err.location.len == 0 and err.cursor != 0) {
         return InvalidArgumentError.CursorNotInSlice;
     }
     var line_start: [*:0]const u8 = err.input;

@@ -34,3 +34,10 @@ pub const regs = struct {
     pub const t5 = 30;
     pub const t6 = 31;
 };
+
+pub fn getArgumentRegister(arg_index: usize) ?Reg {
+    if (arg_index < 8) {
+        return 10 + @intCast(u5, arg_index);
+    }
+    return null;
+}

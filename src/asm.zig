@@ -14,6 +14,7 @@ const Elf64_Sym = elf.Elf64_Sym;
 const Elf64_Rela = elf.Elf64_Rela;
 
 const Reg = @import("types.zig").Reg;
+const regs = @import("types.zig").regs;
 
 pub const Section = struct { section: u16 };
 pub const Symbol = struct { symbol: u64 };
@@ -134,6 +135,9 @@ pub const Assembler = struct {
     }
     pub fn instrJalr(self: *Self, rd: Reg, rs1: Reg, imm: i12) !void {
         return encodeIInstr(&self.text, jalr, 0, rd, rs1, imm);
+    }
+    pub fn instrRet(self: *Self) !void {
+        return self.instrJalr(regs.zero, regs.ra, 0 );
     }
     pub fn instrJump(self: *Self, symbol: Symbol) !void {
         _ = self;

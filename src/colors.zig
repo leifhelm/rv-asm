@@ -1,4 +1,3 @@
-
 pub const clear = "\x1b[0m";
 pub const blue_underline = "\x1b[4;94m";
 pub const blue = "\x1b[94m";
